@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, render_template
 app = Flask(__name__)
 
 # Simulated database or list of books
+
 books = [
     { 'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald', 'year': 1925 },
     { 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee', 'year': 1960 },
