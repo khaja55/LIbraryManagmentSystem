@@ -32,7 +32,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
 
     if (filteredBooks.length === 0) {
         const row = document.createElement('tr');
-        row.innerHTML = <td colspan="3">No results found</td>;
+        row.innerHTML = '<td colspan="3">No results found</td>';
         resultsTableBody.appendChild(row);
     }
 });
