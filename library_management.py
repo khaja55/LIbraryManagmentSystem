@@ -1,54 +1,32 @@
-class User:
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-
-class Admin(User):
-    def __init__(self, username, password):
-        super().__init__(username, password)
-
-users = [User("user1", "pass1"), User("user2", "pass2")]
-admins = [Admin("admin1", "adminpass1"), Admin("admin2", "adminpass2")]
-
-def login(username, password, user_list):
-    for user in user_list:
-        if user.username == username and user.password == password:
-            return user
-    return None
-
-def user_dashboard():
-    # In a real application, this function would handle user-specific actions
-    return "Welcome to the User Dashboard"
-
-def admin_dashboard():
-    # In a real application, this function would handle admin-specific actions
-    return "Welcome to the Admin Dashboard"
-
-from flask import Flask, render_template, request, jsonify
+pip install flask
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
+
+# Simulated database or list of books
+books = [
+    { 'title': 'The Great Gatsby', 'author': 'F. Scott Fitzgerald', 'year': 1925 },
+    { 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee', 'year': 1960 },
+    { 'title': '1984', 'author': 'George Orwell', 'year': 1949 },
+    { 'title': 'Moby Dick', 'author': 'Herman Melville', 'year': 1851 }
+]
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/login', methods=['POST'])
-def authenticate():
-    data = request.get_json()
-    role = data['role']
-    username = data['username']
-    password = data['password']
+@app.route('/search', methods=['POST'])
+def search_books():
+    search_input = request.json.get('searchInput', '').lower()
 
-    if role.lower() == "user":
-        user = login(username, password, users)
-        if user:
-            return jsonify({'message': user_dashboard()})
-    elif role.lower() == "admin":
-        admin = login(username, password, admins)
-        if admin:
-            return jsonify({'message': admin_dashboard()})
-    
-    return jsonify({'error': 'Invalid credentials'})
+    if not search_input:
+        return jsonify({'error': 'Invalid search input'}), 400
+
+    filtered_books = [book for book in books
+                      if search_input in book['title'].lower() or
+                      search_input in book['author'].lower()]
+
+    return jsonify({'books': filtered_books})
 
 if __name__ == '__main__':
     app.run(debug=True)
